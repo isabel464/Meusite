@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Treinador de Digitação - Isabel Helen</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #4b2e83;
+    }
+
+    #texto-modelo {
+      background-color: #fff;
+      border-left: 5px solid #4b2e83;
+      padding: 15px;
+      margin: 20px auto;
+      max-width: 700px;
+      font-size: 18px;
+      line-height: 1.6;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    textarea {
+      width: 90%;
+      max-width: 700px;
+      height: 150px;
+      padding: 15px;
+      font-size: 16px;
+      margin-top: 20px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      resize: none;
+    }
+
+    #estatisticas {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4b2e83;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #6a4c93;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Olá, Isabel Helen!</h1>
+  <p>Bem-vinda ao seu treinador de digitação 💻</p>
+
+  <div id="texto-modelo">
+    O rápido desenvolvimento da tecnologia está mudando a forma como nos comunicamos, trabalhamos e estudamos.
+    Saber digitar bem é uma habilidade essencial para o futuro!
+  </div>
+
+  <textarea id="campo-digitacao" placeholder="Digite o texto acima aqui..." oninput="verificarDigitacao()"></textarea>
+
+  <div id="estatisticas">
+    Tempo: <span id="tempo">0</span>s<br>
+    Precisão: <span id="precisao">0%</span><br>
+    Velocidade: <span id="velocidade">0</span> letras/minuto
+  </div>
+
+  <button onclick="reiniciar()">Reiniciar Treino</button>
+
+  <script>
+    const textoModelo = document.getElementById("texto-modelo").innerText;
+    let startTime, interval;
+
+    function reiniciar() {
+      clearInterval(interval);
+      document.getElementById("campo-digitacao").value = "";
+      document.getElementById("campo-digitacao").disabled = false;
+      document.getElementById("tempo").textContent = "0";
+      document.getElementById("precisao").textContent = "0%";
+      document.getElementById("velocidade").textContent = "0";
+      startTime = new Date();
+      interval = setInterval(atualizarTempo, 1000);
+    }
+
+    function atualizarTempo() {
+      const now = new Date();
+      const elapsed = Math.floor((now - startTime) / 1000);
+      document.getElementById("tempo").textContent = elapsed;
+    }
+
+    function verificarDigitacao() {
+      const digitado = document.getElementById("campo-digitacao").value;
+      const correto = textoModelo.substring(0, digitado.length);
+
+      // Calcular precisão
+      let corretos = 0;
+      for (let i = 0; i < digitado.length; i++) {
+        if (digitado[i] === correto[i]) corretos++;
+      }
+
+      const percentual = Math.round((corretos / textoModelo.length) * 100);
+      document.getElementById("precisao").textContent = percentual + "%";
+
+      // Calcular velocidade
+      const tempoDecorrido = Math.floor((new Date() - startTime) / 60000); // minutos
+      const velocidade = tempoDecorrido > 0 ? Math.round(digitado.length / tempoDecorrido) : 0;
+      document.getElementById("velocidade").textContent = velocidade;
+
+      // Finalizou o texto
+      if (digitado === textoModelo) {
+        clearInterval(interval);
+        document.getElementById("campo-digitacao").disabled = true;
+        alert("Parabéns, Isabel Helen! Você terminou o treino!");
+      }
+    }
+
+    // Inicia o temporizador ao carregar
+    window.onload = reiniciar;
+  </script>
+
+</body>
+</html>
